@@ -1,0 +1,220 @@
+Kalkulator Ekogroszku - wersja HTML
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Ceny Ekogroszku</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .container {
+            background: linear-gradient(to right, #e6f2ff, #f0f8ff);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #0047ab;
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+        
+        .input-group {
+            background-color: white;
+            padding: 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 16px;
+        }
+        
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4a4a4a;
+            margin-bottom: 4px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+        }
+        
+        .result {
+            background-color: #0047ab;
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 24px;
+            text-align: center;
+        }
+        
+        .result h2 {
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .result-value {
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .result-note {
+            font-size: 12px;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+        
+        .details {
+            background-color: white;
+            padding: 16px;
+            border-radius: 6px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .details h3 {
+            color: #4a4a4a;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .details ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .details li {
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Ceny Ekogroszku</h1>
+        
+        <div class="input-group">
+            <label for="cenaniesortu">Cena węgla niesortowanego (zł/tona)</label>
+            <input type="number" id="cenaniesortu" value="400">
+        </div>
+        
+        <div class="input-group">
+            <label for="iloscton">Ilość ton węgla niesortowanego</label>
+            <input type="number" id="iloscton" value="1">
+        </div>
+        
+        <div class="input-group">
+            <label for="procentmialu">Procent miału w węglu niesortowanym (%)</label>
+            <input type="number" id="procentmialu" value="50">
+        </div>
+        
+        <div class="input-group">
+            <label for="cenamialu">Cena sprzedaży miału (zł/tona)</label>
+            <input type="number" id="cenamialu" value="300">
+        </div>
+        
+        <div class="result">
+            <h2>Wynik kalkulacji</h2>
+            <div class="result-value" id="cenaekogroszku">500.00 zł/tona</div>
+            <div class="result-note">Minimalna cena ekogroszku, aby wyjść na zero</div>
+        </div>
+        
+        <div class="details">
+            <h3>Szczegóły obliczeń:</h3>
+            <ul>
+                <li>Koszt całkowity: <span id="kosztCalkowity">400.00</span> zł</li>
+                <li>Ilość miału: <span id="iloscMialu">0.50</span> tony</li>
+                <li>Ilość ekogroszku: <span id="iloscEkogroszku">0.50</span> tony</li>
+                <li>Przychód z miału: <span id="przychodMial">150.00</span> zł</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Pobierz elementy
+        const cenaniesortuInput = document.getElementById('cenaniesortu');
+        const ilosctonInput = document.getElementById('iloscton');
+        const procentmialuInput = document.getElementById('procentmialu');
+        const cenamialuInput = document.getElementById('cenamialu');
+        
+        // Elementy wyniku
+        const cenaekogroszku = document.getElementById('cenaekogroszku');
+        const kosztCalkowity = document.getElementById('kosztCalkowity');
+        const iloscMialu = document.getElementById('iloscMialu');
+        const iloscEkogroszku = document.getElementById('iloscEkogroszku');
+        const przychodMial = document.getElementById('przychodMial');
+        
+        // Funkcja do obliczania ceny ekogroszku
+        function obliczCeneEkogroszku() {
+            // Pobierz wartości z pól
+            const cenaniesortu = parseFloat(cenaniesortuInput.value) || 0;
+            const iloscton = parseFloat(ilosctonInput.value) || 0;
+            const procentmialu = parseFloat(procentmialuInput.value) || 0;
+            const cenamialu = parseFloat(cenamialuInput.value) || 0;
+            
+            // Konwersja procentu miału na decimals (np. 50% -> 0.5)
+            const procentMialuDecimal = procentmialu / 100;
+            const procentEkogroszkaDecimal = 1 - procentMialuDecimal;
+            
+            // Obliczenia dla całkowitej ilości ton
+            const kosztCalkowityValue = cenaniesortu * iloscton;
+            const iloscMialuValue = procentMialuDecimal * iloscton;
+            const iloscEkogroszekValue = procentEkogroszkaDecimal * iloscton;
+            
+            // Przychód ze sprzedaży miału
+            const przychodMialValue = iloscMialuValue * cenamialu;
+            
+            // Obliczenie, ile musimy zarobić na ekogroszku, aby wyjść na zero
+            const potrzebnyPrzychodEkogroszek = kosztCalkowityValue - przychodMialValue;
+            
+            // Obliczenie ceny za tonę ekogroszku, aby wyjść na zero
+            let obliczonaCenaEkogroszku = 0;
+            if (iloscEkogroszekValue > 0) {
+                obliczonaCenaEkogroszku = potrzebnyPrzychodEkogroszek / iloscEkogroszekValue;
+            }
+            
+            // Aktualizacja wyników
+            cenaekogroszku.textContent = obliczonaCenaEkogroszku.toFixed(2) + ' zł/tona';
+            kosztCalkowity.textContent = kosztCalkowityValue.toFixed(2);
+            iloscMialu.textContent = iloscMialuValue.toFixed(2);
+            iloscEkogroszku.textContent = iloscEkogroszekValue.toFixed(2);
+            przychodMial.textContent = przychodMialValue.toFixed(2);
+        }
+        
+        // Dodaj nasłuchiwanie zdarzeń
+        cenaniesortuInput.addEventListener('input', obliczCeneEkogroszku);
+        ilosctonInput.addEventListener('input', obliczCeneEkogroszku);
+        procentmialuInput.addEventListener('input', obliczCeneEkogroszku);
+        cenamialuInput.addEventListener('input', obliczCeneEkogroszku);
+        
+        // Wykonaj obliczenia na starcie
+        obliczCeneEkogroszku();
+    </script>
+</body>
+</html>
